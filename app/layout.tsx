@@ -1,11 +1,14 @@
-import { GraphQLProvider } from './src/shared/api/graphql';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'CV Frontend',
+  description: 'CV application',
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <GraphQLProvider>{children}</GraphQLProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
