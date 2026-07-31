@@ -15,10 +15,12 @@ const loaders = {
 export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
   const locale =
-    requested && routing.locales.includes(requested as any) ? requested : routing.defaultLocale;
+    requested && routing.locales.includes(requested as 'en' | 'ru')
+      ? requested
+      : routing.defaultLocale;
 
   const namespaces = loaders[locale as keyof typeof loaders];
-  const messages: Record<string, any> = {};
+  const messages: Record<string, Record<string, string>> = {};
 
   for (const [name, load] of Object.entries(namespaces)) {
     messages[name] = (await load()).default;

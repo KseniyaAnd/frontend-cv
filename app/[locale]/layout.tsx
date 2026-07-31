@@ -1,7 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import InitColorSchemeScript from '@mui/material/InitColorSchemeScript'; // <-- Добавьте этот импорт
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 
 import { routing } from '../../i18n/routing';
 import Providers from './providers';
@@ -11,11 +11,11 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: 'en' | 'ru' }>;
 }) {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale)) {
     notFound();
   }
 
