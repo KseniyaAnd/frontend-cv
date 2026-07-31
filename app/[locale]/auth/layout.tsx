@@ -19,7 +19,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
       <Container
         component="main"
-        maxWidth="xs"
+        maxWidth={false}
+        disableGutters
         sx={{
           flex: 1,
           display: 'flex',
