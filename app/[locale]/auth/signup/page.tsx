@@ -3,10 +3,9 @@
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
-import { Box, Button, TextField, Typography, Alert } from '@mui/material';
-import { PasswordInput } from '../PasswordInput';
 import { useRouter } from 'next/navigation';
-import { signup } from '../../../../lib/graphql/auth';
+import { PasswordInput } from '../PasswordInput';
+import { signup } from '@/lib/graphql/auth';
 
 type SignupForm = {
   email: string;
@@ -16,6 +15,7 @@ type SignupForm = {
 export default function SignupPage() {
   const t = useTranslations('auth');
   const router = useRouter();
+
   const [serverError, setServerError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -26,9 +26,14 @@ export default function SignupPage() {
     },
   });
 
+  const getErrorMessage = (error: any, fallback: string): string => {
+    return error?.response?.errors?.[0]?.message ?? fallback;
+  };
+
   const onSubmit = async (values: SignupForm) => {
     setServerError(null);
     setLoading(true);
+
     try {
       const result = await signup(values);
 
@@ -37,62 +42,28 @@ export default function SignupPage() {
 
       router.push('/');
     } catch (err: any) {
-      const message = err?.response?.errors?.[0]?.message ?? t('errors.unknown');
-      setServerError(message);
+      setServerError(getErrorMessage(err, t('errors.invalidCredentials')));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        minHeight: 'calc(100vh - 80px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Box
-        component="form"
+    <div className="flex min-h-[calc(100vh-80px)] w-full items-center justify-center px-4">
+      <form
         onSubmit={handleSubmit(onSubmit)}
-        sx={{
-          width: 560,
-          maxWidth: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+        className="flex w-full max-w-md flex-col items-center"
       >
-        <Typography
-          variant="h2"
-          sx={{
-            fontSize: { xs: 40, md: 56 },
-            fontWeight: 500,
-            lineHeight: 1.1,
-            mb: 1,
-            textAlign: 'center',
-          }}
-        >
+        <h1 className="mb-3 text-center text-3xl font-normal text-text md:text-4xl">
           {t('registerNow')}
-        </Typography>
+        </h1>
 
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{
-            mb: 5,
-            fontSize: 18,
-            textAlign: 'center',
-          }}
-        >
-          {t('signupSubtitle')}
-        </Typography>
+        <p className="mb-8 text-center text-sm text-text-secondary">{t('signupSubtitle')}</p>
 
         {serverError && (
-          <Alert severity="error" sx={{ mb: 3 }}>
+          <div className="mb-6 w-full rounded-input border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary">
             {serverError}
-          </Alert>
+          </div>
         )}
 
         <Controller
@@ -100,57 +71,39 @@ export default function SignupPage() {
           control={control}
           rules={{ required: true }}
           render={({ field }) => (
-            <TextField {...field} fullWidth label={t('email')} variant="outlined" sx={{ mb: 3 }} />
+            <div className="mb-4 w-full">
+              <input
+                {...field}
+                type="email"
+                placeholder={t('email')}
+                className="w-full rounded-input border border-border bg-surface px-4 py-3.5 text-sm text-text placeholder:text-text-secondary outline-none transition focus:border-text"
+              />
+            </div>
           )}
         />
 
-        <PasswordInput
-          control={control}
-          name="password"
-          fullWidth
-          label={t('password')}
-          variant="outlined"
-          sx={{ mb: 6 }}
-        />
+        <div className="mb-8 w-full">
+          <PasswordInput control={control} name="password" label={t('password')} />
+        </div>
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 2,
-          }}
-        >
-          <Button
+        <div className="flex w-full flex-col items-center gap-4">
+          <button
             type="submit"
-            variant="contained"
             disabled={loading}
-            sx={{
-              width: 220,
-              height: 48,
-              borderRadius: '999px',
-              textTransform: 'uppercase',
-              fontWeight: 700,
-            }}
+            className="flex h-12 w-60 items-center justify-center rounded-button bg-primary text-sm font-bold uppercase tracking-wider text-primary-contrast transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? '...' : t('createAccount')}
-          </Button>
+          </button>
 
-          <Button
+          <button
             type="button"
-            variant="text"
-            color="inherit"
             onClick={() => router.push('/auth/login')}
-            sx={{
-              color: 'text.secondary',
-              textTransform: 'uppercase',
-              fontWeight: 600,
-            }}
+            className="text-xs font-bold uppercase tracking-wider text-text-secondary hover:text-text transition-colors"
           >
             {t('haveAccount')}
-          </Button>
-        </Box>
-      </Box>
-    </Box>
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

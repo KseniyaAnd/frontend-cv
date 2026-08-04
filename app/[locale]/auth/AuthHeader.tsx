@@ -1,42 +1,41 @@
 'use client';
 
-import React from 'react';
-import { Tabs, Tab, Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '../../../i18n/routing';
+import { usePathname, useRouter } from '@/i18n/routing';
 
 export default function AuthHeader() {
   const t = useTranslations('auth');
   const pathname = usePathname();
   const router = useRouter();
 
-  const currentTab = pathname.includes('/signup') ? '/auth/signup' : '/auth/login';
+  const isSignup = pathname.includes('/signup');
 
-  const handleChange = (_: React.SyntheticEvent, newValue: string) => {
-    router.push(newValue);
-  };
+  const baseButtonStyles =
+    'relative px-6 py-3 text-sm font-bold uppercase tracking-wider transition-colors';
+  const activeTabStyles = 'text-primary';
+  const inactiveTabStyles = 'text-text-secondary hover:text-text';
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', pt: 2 }}>
-      <Tabs
-        value={currentTab}
-        onChange={handleChange}
-        textColor="primary"
-        indicatorColor="primary"
-        sx={{
-          '& .MuiTabs-indicator': {
-            height: 3,
-          },
-          '& .MuiTab-root': {
-            fontWeight: 600,
-            fontSize: '0.875rem',
-            px: 4,
-          },
-        }}
-      >
-        <Tab label={t('login')} value="/auth/login" />
-        <Tab label={t('signup')} value="/auth/signup" />
-      </Tabs>
-    </Box>
+    <header className="flex w-full justify-center pt-4">
+      <nav className="flex">
+        <button
+          type="button"
+          onClick={() => router.push('/auth/login')}
+          className={`${baseButtonStyles} ${!isSignup ? activeTabStyles : inactiveTabStyles}`}
+        >
+          {t('login')}
+          {!isSignup && <span className="absolute bottom-0 left-0 h-0.5 w-full bg-primary" />}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => router.push('/auth/signup')}
+          className={`${baseButtonStyles} ${isSignup ? activeTabStyles : inactiveTabStyles}`}
+        >
+          {t('signup')}
+          {isSignup && <span className="absolute bottom-0 left-0 h-0.5 w-full bg-primary" />}
+        </button>
+      </nav>
+    </header>
   );
 }

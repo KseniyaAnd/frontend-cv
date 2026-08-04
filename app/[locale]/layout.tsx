@@ -1,10 +1,10 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 
-import { routing } from '../../i18n/routing';
-import Providers from './providers';
+import '../globals.css';
+import { routing } from '@/i18n/routing';
+import { ThemeProvider } from '../providers/ThemeProvider';
 
 export default async function RootLayout({
   children,
@@ -23,11 +23,9 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body>
-        <InitColorSchemeScript attribute="class" defaultMode="dark" />
-
+      <body className="min-h-screen bg-background text-text antialiased">
         <NextIntlClientProvider messages={messages}>
-          <Providers>{children}</Providers>
+          <ThemeProvider>{children}</ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
