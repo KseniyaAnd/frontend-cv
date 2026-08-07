@@ -6,10 +6,12 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { PasswordInput } from '../PasswordInput';
 import { signup } from '@/lib/graphql/auth';
+import { getErrorMessage } from '@/lib/utils/error';
 
 type SignupForm = {
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
 export default function SignupPage() {
@@ -23,26 +25,27 @@ export default function SignupPage() {
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
     },
   });
-
-  const getErrorMessage = (error: any, fallback: string): string => {
-    return error?.response?.errors?.[0]?.message ?? fallback;
-  };
 
   const onSubmit = async (values: SignupForm) => {
     setServerError(null);
     setLoading(true);
 
     try {
-      const result = await signup(values);
+      const { signup: result } = await signup({
+        email: values.email,
+        password: values.password,
+        confirmPassword: values.confirmPassword,
+      });
 
       localStorage.setItem('access_token', result.access_token);
       localStorage.setItem('refresh_token', result.refresh_token);
 
-      router.push('/');
-    } catch (err: any) {
-      setServerError(getErrorMessage(err, t('errors.invalidCredentials')));
+      router.push(`/verify-email?email=${encodeURIComponent(values.email)}`);
+    } catch (error: unknown) {
+      setServerError(getErrorMessage(error, t('errors.registrationFailed')));
     } finally {
       setLoading(false);
     }
@@ -82,8 +85,12 @@ export default function SignupPage() {
           )}
         />
 
-        <div className="mb-8 w-full">
+        <div className="mb-4 w-full">
           <PasswordInput control={control} name="password" label={t('password')} />
+        </div>
+
+        <div className="mb-8 w-full">
+          <PasswordInput control={control} name="confirmPassword" label={t('confirmPassword')} />
         </div>
 
         <div className="flex w-full flex-col items-center gap-4">

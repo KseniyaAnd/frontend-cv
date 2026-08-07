@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+  type RegisterOptions,
+} from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
 
 type PasswordInputProps<T extends FieldValues> = {
@@ -8,6 +14,7 @@ type PasswordInputProps<T extends FieldValues> = {
   name: Path<T>;
   label?: string;
   placeholder?: string;
+  rules?: RegisterOptions<T, Path<T>>;
 };
 
 export function PasswordInput<T extends FieldValues>({
@@ -15,6 +22,7 @@ export function PasswordInput<T extends FieldValues>({
   name,
   label,
   placeholder,
+  rules,
 }: PasswordInputProps<T>) {
   const t = useTranslations('auth');
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +31,7 @@ export function PasswordInput<T extends FieldValues>({
     <Controller
       name={name}
       control={control}
+      rules={rules}
       render={({ field, fieldState }) => (
         <div className="w-full">
           <div className="relative">

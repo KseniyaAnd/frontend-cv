@@ -1,30 +1,20 @@
 import { getRequestConfig } from 'next-intl/server';
 import { routing } from './routing';
 
-const loaders = {
-  en: {
-    auth: () => import('../messages/en/auth.json'),
-    common: () => import('../messages/en/common.json'),
-  },
-  ru: {
-    auth: () => import('../messages/ru/auth.json'),
-    common: () => import('../messages/ru/common.json'),
-  },
-} as const;
+const NAMESPACES = ['auth', 'common'] as const;
 
 export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
-  const locale =
-    requested && routing.locales.includes(requested as 'en' | 'ru')
-      ? requested
-      : routing.defaultLocale;
+  const locale = routing.locales.includes(requested as 'en' | 'ru')
+    ? (requested as 'en' | 'ru')
+    : routing.defaultLocale;
 
-  const namespaces = loaders[locale as keyof typeof loaders];
-  const messages: Record<string, Record<string, string>> = {};
+  const loaded = await Promise.all(
+    NAMESPACES.map(async (ns) => [ns, (await import(`../messages/${locale}/${ns}.json`)).default]),
+  );
 
-  for (const [name, load] of Object.entries(namespaces)) {
-    messages[name] = (await load()).default;
-  }
-
-  return { locale, messages };
+  return {
+    locale,
+    messages: Object.fromEntries(loaded),
+  };
 });

@@ -4,7 +4,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { PasswordInput } from '../PasswordInput';
-import { loginAction } from '@/app/actions/auth';
+import { login } from '@/lib/graphql/auth';
+import { getErrorMessage } from '@/lib/utils/error';
 
 type LoginForm = {
   email: string;
@@ -23,18 +24,19 @@ export default function LoginPage() {
     },
   });
 
-  const getErrorMessage = (error: any, fallback: string): string => {
-    return error?.response?.errors?.[0]?.message ?? fallback;
-  };
-
   const onSubmit = (values: LoginForm) => {
     setServerError(null);
+
     startTransition(async () => {
       try {
-        await loginAction(values);
+        const { login: result } = await login(values);
+
+        localStorage.setItem('access_token', result.access_token);
+        localStorage.setItem('refresh_token', result.refresh_token);
+
         router.push('/');
         router.refresh();
-      } catch (err: any) {
+      } catch (err: unknown) {
         setServerError(getErrorMessage(err, t('errors.invalidCredentials')));
       }
     });
@@ -83,7 +85,7 @@ export default function LoginPage() {
           </button>
           <button
             type="button"
-            onClick={() => router.push('/auth/forgot-password')}
+            onClick={() => router.push('/forgot-password')}
             className="text-xs font-bold uppercase tracking-wider text-text-secondary hover:text-text transition-colors"
           >
             {t('forgotPassword')}
