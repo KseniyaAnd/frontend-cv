@@ -4,9 +4,9 @@ import { useActionState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-
-import { PasswordInput } from '../PasswordInput';
 import { loginAction } from '@/lib/actions/login';
+import { Input } from '@/lib/components/Input';
+
 type LoginForm = {
   email: string;
   password: string;
@@ -41,27 +41,26 @@ export default function LoginPage() {
           </div>
         )}
 
-        <Controller
-          name="email"
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field }) => (
-            <div className="mb-4 w-full">
-              <input
-                {...field}
-                name="email"
-                type="email"
-                placeholder={t('email')}
-                className="w-full rounded-input border border-border bg-surface px-4 py-3.5 text-sm text-text placeholder:text-text-secondary outline-none transition focus:border-text"
-              />
-            </div>
-          )}
-        />
+        <div className="mb-4 w-full">
+          <Input
+            control={control}
+            name="email"
+            type="email"
+            placeholder={t('email')}
+            autoComplete="email"
+            rules={{ required: t('errors.emailRequired') }}
+          />
+        </div>
 
         <div className="mb-8 w-full">
-          <PasswordInput control={control} name="password" label={t('password')} />
+          <Input
+            control={control}
+            name="password"
+            type="password"
+            placeholder={t('password')}
+            autoComplete="current-password"
+            rules={{ required: t('errors.passwordRequired') }}
+          />
         </div>
 
         <div className="flex w-full flex-col items-center gap-4">

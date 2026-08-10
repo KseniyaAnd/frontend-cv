@@ -4,8 +4,7 @@ import { useActionState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
-
-import { PasswordInput } from '../auth/PasswordInput';
+import { Input } from '@/lib/components/Input';
 import { resetPasswordAction } from '@/lib/actions/reset-password';
 
 type ResetPasswordForm = {
@@ -48,10 +47,12 @@ export default function ResetPasswordPage() {
         )}
 
         <div className="mb-4 w-full">
-          <PasswordInput
+          <Input
             control={control}
             name="newPassword"
-            label={t('newPassword')}
+            type="password"
+            placeholder={t('newPassword')}
+            autoComplete="new-password"
             rules={{
               required: t('errors.passwordRequired'),
               minLength: {
@@ -63,10 +64,12 @@ export default function ResetPasswordPage() {
         </div>
 
         <div className="mb-8 w-full">
-          <PasswordInput
+          <Input
             control={control}
             name="confirmPassword"
-            label={t('confirmPassword')}
+            type="password"
+            placeholder={t('confirmPassword')}
+            autoComplete="new-password"
             rules={{
               required: t('errors.confirmPasswordRequired'),
               validate: (value) =>
@@ -88,7 +91,7 @@ export default function ResetPasswordPage() {
             type="button"
             onClick={() => router.push(`/${locale}/auth/login`)}
             disabled={pending}
-            className="text-xs font-bold uppercase tracking-wider text-text-secondary hover:text-text transition-colors disabled:opacity-50"
+            className="text-xs font-bold uppercase tracking-wider text-text-secondary transition-colors hover:text-text disabled:opacity-50"
           >
             {t('goToSignIn')}
           </button>
