@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useActionState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { forgotPassword } from '@/lib/graphql/auth';
-import { getErrorMessage } from '@/lib/utils/error';
+import { forgotPasswordAction } from '@/lib/actions/forgot-password';
 
 type ForgotPasswordForm = {
   email: string;
@@ -14,14 +13,12 @@ type ForgotPasswordForm = {
 export default function ForgotPasswordPage() {
   const t = useTranslations('auth');
   const router = useRouter();
+  const locale = useLocale();
 
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [state, formAction, pending] = useActionState(forgotPasswordAction, {});
 
   const {
     control,
-    handleSubmit,
     formState: { errors },
   } = useForm<ForgotPasswordForm>({
     defaultValues: {
@@ -29,36 +26,9 @@ export default function ForgotPasswordPage() {
     },
   });
 
-  const onSubmit = (values: ForgotPasswordForm) => {
-    setServerError(null);
-    setSuccessMessage(null);
-
-    startTransition(async () => {
-      try {
-        await forgotPassword(values.email);
-
-        setSuccessMessage(
-          t('passwordResetEmailSent') ||
-            'Password reset instructions have been sent to your email address.',
-        );
-      } catch (err: unknown) {
-        setServerError(
-          getErrorMessage(
-            err,
-            t('errors.resetPasswordFailed') || 'Something went wrong. Please try again later.',
-          ),
-        );
-      }
-    });
-  };
-
   return (
     <div className="flex min-h-[calc(100vh-80px)] w-full items-center justify-center px-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex w-full max-w-md flex-col items-center"
-        noValidate
-      >
+      <form action={formAction} className="flex w-full max-w-md flex-col items-center" noValidate>
         <h1 className="mb-3 text-center text-3xl font-normal text-text md:text-4xl">
           {t('forgotPasswordTitle') || 'Forgot password'}
         </h1>
@@ -67,15 +37,15 @@ export default function ForgotPasswordPage() {
           {t('forgotPasswordSubtitle') || 'We will send you an email with further instructions'}
         </p>
 
-        {serverError && (
+        {state.error && (
           <div className="mb-6 w-full rounded-input border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary">
-            {serverError}
+            {state.error}
           </div>
         )}
 
-        {successMessage && (
+        {state.success && (
           <div className="mb-6 w-full rounded-input border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400">
-            {successMessage}
+            {t('passwordResetEmailSent') || state.success}
           </div>
         )}
 
@@ -93,6 +63,7 @@ export default function ForgotPasswordPage() {
             <div className="mb-8 w-full">
               <input
                 {...field}
+                name="email"
                 id="email"
                 type="email"
                 autoComplete="email"
@@ -116,16 +87,16 @@ export default function ForgotPasswordPage() {
         <div className="flex w-full flex-col items-center gap-4">
           <button
             type="submit"
-            disabled={isPending}
+            disabled={pending}
             className="flex h-12 w-60 items-center justify-center rounded-button bg-primary text-sm font-bold uppercase tracking-wider text-primary-contrast transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isPending ? '...' : t('resetPassword') || 'Reset password'}
+            {pending ? '...' : t('resetPassword') || 'Reset password'}
           </button>
 
           <button
             type="button"
-            onClick={() => router.push('/auth/login')}
-            disabled={isPending}
+            onClick={() => router.push(`/${locale}/auth/login`)}
+            disabled={pending}
             className="text-xs font-bold uppercase tracking-wider text-text-secondary transition-colors hover:text-text focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50"
           >
             {t('cancel') || 'Cancel'}

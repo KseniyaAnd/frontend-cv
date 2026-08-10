@@ -37,6 +37,7 @@ export function PasswordInput<T extends FieldValues>({
           <div className="relative">
             <input
               {...field}
+              name={name}
               type={showPassword ? 'text' : 'password'}
               placeholder={placeholder ?? label}
               className={`w-full rounded-input border bg-surface px-4 py-3.5 pr-12 text-sm text-text placeholder:text-text-secondary outline-none transition ${
