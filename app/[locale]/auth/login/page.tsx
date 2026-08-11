@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { loginAction } from '@/lib/actions/login';

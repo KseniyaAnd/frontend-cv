@@ -1,5 +1,7 @@
 'use server';
 
+import { getLocale, getTranslations } from 'next-intl/server';
+
 import { forgotPassword } from '@/lib/graphql/auth';
 import { getErrorMessage } from '@/lib/utils/error';
 
@@ -12,17 +14,24 @@ export async function forgotPasswordAction(
   _: ForgotPasswordState,
   formData: FormData,
 ): Promise<ForgotPasswordState> {
+  const locale = await getLocale();
+
+  const t = await getTranslations({
+    locale,
+    namespace: 'auth',
+  });
+
   try {
     const email = String(formData.get('email'));
 
     await forgotPassword(email);
 
     return {
-      success: 'Password reset instructions have been sent to your email address.',
+      success: t('passwordResetEmailSent'),
     };
   } catch (error) {
     return {
-      error: getErrorMessage(error, 'Something went wrong. Please try again later.'),
+      error: getErrorMessage(error, t('errors.forgotPasswordFailed')),
     };
   }
 }

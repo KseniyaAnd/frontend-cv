@@ -1,5 +1,6 @@
 'use server';
 
+import { getLocale, getTranslations } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -26,6 +27,13 @@ export async function resetPasswordAction(
   _: ResetPasswordState,
   formData: FormData,
 ): Promise<ResetPasswordState> {
+  const locale = await getLocale();
+
+  const t = await getTranslations({
+    locale,
+    namespace: 'auth',
+  });
+
   try {
     const token = String(formData.get('token'));
     const newPassword = String(formData.get('newPassword'));
@@ -33,7 +41,7 @@ export async function resetPasswordAction(
 
     if (!token) {
       return {
-        error: 'Reset link expired',
+        error: t('errors.resetLinkExpired'),
       };
     }
 
@@ -41,7 +49,7 @@ export async function resetPasswordAction(
 
     if (!email) {
       return {
-        error: 'Reset link expired',
+        error: t('errors.resetLinkExpired'),
       };
     }
 
@@ -71,7 +79,7 @@ export async function resetPasswordAction(
     redirect('/');
   } catch (error) {
     return {
-      error: getErrorMessage(error, 'Failed to reset password'),
+      error: getErrorMessage(error, t('errors.resetPasswordFailed')),
     };
   }
 }
