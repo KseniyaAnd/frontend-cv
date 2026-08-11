@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { OtpInput } from '@/lib/components/OtpInput';
 import { verifyEmailAction } from '@/lib/actions/verify-email';
+import { Button } from '@/lib/components/Button';
 
 export default function VerifyEmailPage() {
   const t = useTranslations('auth');
@@ -43,22 +44,18 @@ export default function VerifyEmailPage() {
         </div>
 
         <div className="flex flex-col items-center gap-4">
-          <button
-            type="submit"
-            disabled={pending || code.join('').length !== 6}
-            className="flex h-12 w-60 items-center justify-center rounded-button bg-primary text-sm font-bold uppercase tracking-wider text-primary-contrast transition hover:opacity-90 disabled:opacity-50"
-          >
-            {pending ? '...' : t('confirm')}
-          </button>
+          <Button type="submit" loading={pending} disabled={code.join('').length !== 6}>
+            {t('confirm')}
+          </Button>
 
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={() => router.push(`/${locale}`)}
             disabled={pending}
-            className="text-xs font-bold uppercase tracking-wider text-text-secondary transition-colors hover:text-text disabled:opacity-50"
           >
             {t('later')}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

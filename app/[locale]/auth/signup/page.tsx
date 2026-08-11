@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { signupAction } from '@/lib/actions/signup';
 import { Input } from '@/lib/components/Input';
+import { Button } from '@/lib/components/Button';
 
 type SignupForm = {
   email: string;
@@ -77,21 +78,17 @@ export default function SignupPage() {
         </div>
 
         <div className="flex w-full flex-col items-center gap-4">
-          <button
-            type="submit"
-            disabled={pending}
-            className="flex h-12 w-60 items-center justify-center rounded-button bg-primary text-sm font-bold uppercase tracking-wider text-primary-contrast transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {pending ? '...' : t('createAccount')}
-          </button>
+          <Button type="submit" loading={pending}>
+            {t('createAccount')}
+          </Button>
 
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={() => router.push(`/${locale}/auth/login`)}
-            className="text-xs font-bold uppercase tracking-wider text-text-secondary hover:text-text transition-colors"
           >
             {t('haveAccount')}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

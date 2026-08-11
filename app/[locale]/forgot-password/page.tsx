@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/lib/components/Input';
 import { forgotPasswordAction } from '@/lib/actions/forgot-password';
+import { Button } from '@/lib/components/Button';
 
 type ForgotPasswordForm = {
   email: string;
@@ -65,22 +66,18 @@ export default function ForgotPasswordPage() {
         </div>
 
         <div className="flex w-full flex-col items-center gap-4">
-          <button
-            type="submit"
-            disabled={pending}
-            className="flex h-12 w-60 items-center justify-center rounded-button bg-primary text-sm font-bold uppercase tracking-wider text-primary-contrast transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {pending ? '...' : t('resetPassword')}
-          </button>
+          <Button type="submit" loading={pending}>
+            {t('resetPassword')}
+          </Button>
 
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={() => router.push(`/${locale}/auth/login`)}
             disabled={pending}
-            className="text-xs font-bold uppercase tracking-wider text-text-secondary transition-colors hover:text-text focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50"
           >
             {t('cancel')}
-          </button>
+          </Button>
         </div>
       </form>
     </div>
