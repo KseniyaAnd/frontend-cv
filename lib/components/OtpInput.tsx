@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { applyPastedOtp } from '../utils/applyPastedOtp';
 
 type OtpInputProps = {
   value: string[];
@@ -71,15 +72,11 @@ export function OtpInput({
 
     e.preventDefault();
 
-    const pasted = e.clipboardData.getData('text').replace(/\\D/g, '').slice(0, length);
+    const next = applyPastedOtp(value, e.clipboardData.getData('text'), 6);
 
-    if (!pasted) return;
+    if (next === value) return;
 
-    const next = Array.from({ length }, (_, i) => pasted[i] ?? '');
     onChange(next);
-
-    const focusIndex = Math.min(pasted.length, length - 1);
-    inputs.current[focusIndex]?.focus();
   };
 
   return (
