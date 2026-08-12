@@ -18,7 +18,7 @@ export function Button({
 
   const variants = {
     primary:
-      'w-60 bg-primary text-primary-contrast hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50',
+      'w-60 bg-primary text-primary-contrast hover:bg-button-primary-hover disabled:cursor-not-allowed disabled:opacity-50',
     ghost: 'text-xs text-text-secondary hover:text-text disabled:opacity-50',
   };
 
