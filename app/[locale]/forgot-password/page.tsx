@@ -4,37 +4,37 @@ import { useActionState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { loginAction } from '@/lib/actions/login';
 import { Input } from '@/lib/components/Input';
+import { forgotPasswordAction } from '@/lib/actions/forgot-password';
 import { Button } from '@/lib/components/Button';
 
-type LoginForm = {
+type ForgotPasswordForm = {
   email: string;
-  password: string;
 };
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const t = useTranslations('auth');
   const router = useRouter();
   const locale = useLocale();
 
-  const [state, formAction, pending] = useActionState(loginAction, {});
+  const [state, formAction, pending] = useActionState(forgotPasswordAction, {});
 
-  const { control } = useForm<LoginForm>({
+  const { control } = useForm<ForgotPasswordForm>({
     defaultValues: {
       email: '',
-      password: '',
     },
   });
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] w-full items-center justify-center px-4">
-      <form action={formAction} className="flex w-full max-w-md flex-col items-center">
+      <form action={formAction} className="flex w-full max-w-md flex-col items-center" noValidate>
         <h1 className="mb-3 text-center text-3xl font-normal text-text md:text-4xl">
-          {t('welcomeBack')}
+          {t('forgotPasswordTitle')}
         </h1>
 
-        <p className="mb-8 text-center text-sm text-text-secondary">{t('loginSubtitle')}</p>
+        <p className="mb-8 text-center text-sm text-text-secondary">
+          {t('forgotPasswordSubtitle')}
+        </p>
 
         {state.error && (
           <div className="mb-6 w-full rounded-input border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary">
@@ -42,39 +42,41 @@ export default function LoginPage() {
           </div>
         )}
 
-        <div className="mb-4 w-full">
-          <Input
-            control={control}
-            name="email"
-            type="email"
-            placeholder={t('email')}
-            autoComplete="email"
-            rules={{ required: t('errors.emailRequired') }}
-          />
-        </div>
+        {state.success && (
+          <div className="mb-6 w-full rounded-input border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400">
+            {t('passwordResetEmailSent')}
+          </div>
+        )}
 
         <div className="mb-8 w-full">
           <Input
             control={control}
-            name="password"
-            type="password"
-            placeholder={t('password')}
-            autoComplete="current-password"
-            rules={{ required: t('errors.passwordRequired') }}
+            name="email"
+            type="email"
+            placeholder="example@email.com"
+            autoComplete="email"
+            rules={{
+              required: t('errors.emailRequired'),
+              pattern: {
+                value: /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/,
+                message: t('errors.invalidEmail'),
+              },
+            }}
           />
         </div>
 
         <div className="flex w-full flex-col items-center gap-4">
           <Button type="submit" loading={pending}>
-            {t('login')}
+            {t('resetPassword')}
           </Button>
 
           <Button
             type="button"
             variant="ghost"
-            onClick={() => router.push(`/${locale}/forgot-password`)}
+            onClick={() => router.push(`/${locale}/auth/login`)}
+            disabled={pending}
           >
-            {t('forgotPassword')}
+            {t('cancel')}
           </Button>
         </div>
       </form>
