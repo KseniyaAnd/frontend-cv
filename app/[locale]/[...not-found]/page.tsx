@@ -1,12 +1,9 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/lib/components/Button';
 import { FileQuestion } from 'lucide-react';
 
+import { BackButton } from '@/lib/components/BackButton';
+
 export default function NotFound() {
-  const router = useRouter();
   const t = useTranslations('common.notFound');
 
   return (
@@ -20,9 +17,7 @@ export default function NotFound() {
 
         <p className="mb-8 text-base leading-relaxed text-text-secondary">{t('message')}</p>
 
-        <Button variant="primary" onClick={() => router.back()}>
-          {t('goBack')}
-        </Button>
+        <BackButton>{t('goBack')}</BackButton>
       </div>
     </main>
   );
