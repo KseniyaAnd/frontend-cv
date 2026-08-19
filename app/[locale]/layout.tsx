@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import '../globals.css';
 import { routing } from '@/i18n/routing';
 import { ThemeProvider } from '../providers/ThemeProvider';
+import { OfflineDetector } from '@/lib/components/OfflineDetector';
+import { DeviceGuard } from '@/lib/components/DeviceGuard';
 
 export default async function RootLayout({
   children,
@@ -25,7 +27,11 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body className="min-h-screen bg-background text-text antialiased">
         <NextIntlClientProvider messages={messages}>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <DeviceGuard>
+              <OfflineDetector>{children}</OfflineDetector>
+            </DeviceGuard>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
