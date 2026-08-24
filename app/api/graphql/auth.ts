@@ -1,5 +1,5 @@
 import { gql, GraphQLClient } from 'graphql-request';
-import { getGraphQLClient } from './client';
+import { getServerGraphQLClient } from './server-client';
 
 export type SignupInput = {
   email: string;
@@ -56,13 +56,13 @@ const LOGIN_MUTATION = gql`
 `;
 
 export async function signup(data: SignupInput) {
-  return getGraphQLClient().request<SignupResponse>(SIGNUP_MUTATION, {
+  return getServerGraphQLClient().request<SignupResponse>(SIGNUP_MUTATION, {
     auth: data,
   });
 }
 
 export async function login(data: LoginInput) {
-  return getGraphQLClient().request<LoginResponse>(LOGIN_MUTATION, {
+  return getServerGraphQLClient().request<LoginResponse>(LOGIN_MUTATION, {
     auth: data,
   });
 }
@@ -74,7 +74,7 @@ const FORGOT_PASSWORD_MUTATION = gql`
 `;
 
 export async function forgotPassword(email: string) {
-  return getGraphQLClient().request(FORGOT_PASSWORD_MUTATION, {
+  return getServerGraphQLClient().request(FORGOT_PASSWORD_MUTATION, {
     auth: { email },
   });
 }
@@ -86,7 +86,7 @@ const VERIFY_MAIL_MUTATION = gql`
 `;
 
 export async function verifyMail(otp: string) {
-  return getGraphQLClient().request(VERIFY_MAIL_MUTATION, {
+  return getServerGraphQLClient().request(VERIFY_MAIL_MUTATION, {
     mail: { otp },
   });
 }
@@ -103,8 +103,8 @@ export async function resetPassword(
   confirmPassword: string,
 ) {
   const client = new GraphQLClient(process.env.NEXT_PUBLIC_GRAPHQL_URL!, {
-    credentials: 'include',
     headers: {
+      Origin: process.env.NEXT_PUBLIC_APP_URL!,
       Authorization: `Bearer ${resetToken}`,
     },
   });

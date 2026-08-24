@@ -4,7 +4,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { resetPassword, login } from '@/lib/graphql/auth';
+import { resetPassword, login } from '@/app/api/graphql/auth';
 import { getErrorMessage } from '@/lib/utils/error';
 
 export type ResetPasswordState = {

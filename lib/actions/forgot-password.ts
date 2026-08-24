@@ -2,7 +2,7 @@
 
 import { getLocale, getTranslations } from 'next-intl/server';
 
-import { forgotPassword } from '@/lib/graphql/auth';
+import { forgotPassword } from '@/app/api/graphql/auth';
 import { getErrorMessage } from '@/lib/utils/error';
 
 export type ForgotPasswordState = {
