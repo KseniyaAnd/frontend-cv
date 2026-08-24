@@ -65,7 +65,7 @@ export default function LoginPage() {
         </div>
 
         <div className="flex w-full flex-col items-center gap-4">
-          <Button type="submit" loading={pending}>
+          <Button type="submit" loading={pending} onClick={() => router.push(`/${locale}/home`)}>
             {t('login')}
           </Button>
 
