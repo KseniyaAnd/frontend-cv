@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { signup } from '@/lib/graphql/auth';
+import { signup } from '@/app/api/graphql/auth';
 import { getErrorMessage } from '@/lib/utils/error';
 
 export type SignupState = {
