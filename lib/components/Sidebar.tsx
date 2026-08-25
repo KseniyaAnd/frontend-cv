@@ -13,15 +13,17 @@ import {
   FolderKanban,
   ChevronLeft,
 } from 'lucide-react';
+
 import SidebarProfile from './SidebarProfile';
+import IconButton from './IconButton';
 import { getMe, CurrentUserProfile } from '@/app/api/graphql/profile';
 
 function Logo() {
   return (
     <div className="flex items-center gap-3 px-2">
-      <div className="relative flex h-[30px] w-[30px] items-center justify-center rounded-[4px] bg-text">
-        <span className="absolute left-[7px] top-[6px] h-[17px] w-[5px] rounded-[2px] bg-background" />
-        <span className="absolute right-[6px] top-[6px] h-[5px] w-[5px] rounded-[1px] bg-primary" />
+      <div className="relative flex h-7.5 w-7.5 items-center justify-center rounded-[4px] bg-text">
+        <span className="absolute left-1.75 top-1.5 h-4.25 w-1.25 rounded-xs bg-background" />
+        <span className="absolute right-1.5 top-1.5 h-1.25 w-1.25 rounded-[1px] bg-primary" />
       </div>
 
       <span className="text-[18px] font-semibold tracking-[-0.3px] text-text">CV Builder</span>
@@ -80,6 +82,7 @@ export default function Sidebar() {
     async function loadUser() {
       try {
         const data = await getMe();
+
         if (!cancelled) {
           setUser(data.me);
         }
@@ -108,7 +111,7 @@ export default function Sidebar() {
         className={`
           flex h-14 items-center gap-5
           rounded-r-[28px]
-          px-[18px]
+          px-4.5
           text-[18px]
           transition-colors
 
@@ -130,7 +133,7 @@ export default function Sidebar() {
     <aside
       className="
         fixed inset-y-0 left-0 z-40
-        flex w-[264px] flex-col
+        flex w-66 flex-col
         justify-between
         border-r border-border
         bg-background
@@ -138,36 +141,25 @@ export default function Sidebar() {
       "
     >
       <div>
-        {/* Logo */}
-        <div className="relative mb-[34px] h-[30px]">
+        <div className="relative mb-8.5 h-7.5">
           <Logo />
 
-          {/* Collapse button */}
-          <button
-            type="button"
-            aria-label="Collapse sidebar"
-            className="
-              absolute right-[-1px] top-[42px]
-              flex h-8 w-8 items-center justify-center
-              rounded-full
-              bg-background
-              text-text-secondary
-              transition-colors
-              hover:bg-border
-              hover:text-text
-            "
+          <IconButton
+            size="md"
+            ariaLabel="Collapse sidebar"
+            className="absolute -right-px top-10.5"
           >
             <ChevronLeft size={20} />
-          </button>
+          </IconButton>
         </div>
 
-        {/* Navigation */}
         <nav className="flex flex-col gap-2">
           {menuItems.map(renderMenuItem)}
 
           {isAdmin && (
             <>
               <div className="my-2 border-t border-border" />
+
               {adminMenuItems.map(renderMenuItem)}
             </>
           )}

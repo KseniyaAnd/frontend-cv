@@ -15,10 +15,10 @@ export default function SidebarProfile({ user }: SidebarProfileProps) {
   const initial = firstName.charAt(0).toUpperCase() || lastName.charAt(0).toUpperCase() || '?';
 
   return (
-    <div className="flex min-h-[54px] items-center gap-3 px-2">
+    <div className="flex min-h-13.5 items-center gap-3 px-2">
       <div
         className="
-          flex h-[42px] w-[42px]
+          flex h-10.5 w-10.5
           shrink-0 items-center justify-center
           rounded-full
           bg-primary
